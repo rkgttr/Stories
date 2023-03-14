@@ -61,7 +61,7 @@ const initStories = () => {
         queryall('.rkgttr-stories-bar').forEach(storiesScope => {
           new Swiper.default(storiesScope, {
             slidesPerView: 'auto',
-            spaceBetween: 20,
+            spaceBetween: 0,
           });
           const uid = '_' + Math.round(Math.random() * 10000);
           document.body.appendChild(
