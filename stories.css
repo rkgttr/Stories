@@ -102,7 +102,7 @@
 
 .rkgttr-story-container {
   transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: scale(0.5);
+  transform: scale(0.5)!important;
   opacity: 0.5;
   background-size: cover;
   background-position: center;
@@ -128,7 +128,7 @@
 }
 
 .rkgttr-story-container.rkgttr-current-story {
-  transform: none;
+  transform: none!important;
   opacity: 1;
 }
 
