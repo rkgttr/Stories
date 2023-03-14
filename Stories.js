@@ -42,8 +42,8 @@ const stories = (data = null, seekbars = null, uid = 0) => {
   <button type="button" class="close"><svg class="icon" id="icon-close" viewBox="0 0 24 24"><path d="M17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41L17.59 5Z"></path></svg></button>`;
   return stories;
 };
-const initStories = pos => {
-  if (queryall('button.story').length) {
+const initStories = () => {
+  if (queryall('.rkgttr-stories-bar').length) {
     (async () => {
       const Swiper = await import(
         'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.esm.browser.min.js'
@@ -58,12 +58,12 @@ const initStories = pos => {
           await new Promise(resolve => setTimeout(resolve, 200));
         }
         await new Promise(resolve => setTimeout(resolve, 200));
-        queryall('.stories-bar').forEach(storiesScope => {
+        queryall('.rkgttr-stories-bar').forEach(storiesScope => {
           const uid = '_' + Math.round(Math.random() * 10000);
           document.body.appendChild(
             stories(
               queryall('button.story', storiesScope).map(s =>
-                s.getAttribute('data-pid')
+                s.getAttribute('data-story')
               ),
               null,
               uid
@@ -275,18 +275,6 @@ const initStories = pos => {
                   },
                 }),
               });
-              storiesArray[i].controls.addEventListener('mouseenter', () => {
-                queryall('.cursor, .aura').forEach(i =>
-                  i.classList.add('hovering')
-                );
-                document.documentElement.style.setProperty('--scale', 3);
-              });
-              storiesArray[i].controls.addEventListener('mouseleave', () => {
-                queryall('.cursor, .aura').forEach(i =>
-                  i.classList.remove('hovering')
-                );
-                document.documentElement.style.setProperty('--scale', 1);
-              });
 
               storiesArray[i].controls.addEventListener('click', e => {
                 if (storiesArray[i].story.classList.contains('current-story')) {
@@ -305,18 +293,6 @@ const initStories = pos => {
             });
           });
         });
-        if (pos) {
-          setTimeout(
-            () =>
-              queryone('.current').scrollTo({
-                top:
-                  queryid(pos).getBoundingClientRect().top +
-                  queryone('.current').scrollTop,
-                behavior: 'smooth',
-              }),
-            1000
-          );
-        }
       })();
     })();
   }
