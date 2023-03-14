@@ -109,13 +109,7 @@ const initStories = () => {
               const time = currentlyPlaying.getCurrentTime();
               const ratio = time / currentlyPlaying.getDuration();
               const playlistItem = currentlyPlaying.getPlaylistIndex();
-              let text = '';
-              currentlyPlaying.subs[playlistItem].forEach(sub => {
-                if (time >= sub.start && time <= sub.end) {
-                  text = sub.text;
-                }
-              });
-              currentlyPlaying.subsLayer.textContent = text;
+
               queryall('.rkgttr-seeker', currentlyPlaying.controlLayer).forEach(
                 (seek, i) => {
                   if (i < playlistItem) {
@@ -202,10 +196,7 @@ const initStories = () => {
                           '.rkgttr-controls',
                           queryone('#story' + uid + i).parentNode
                         );
-                        e.target.subsLayer = queryone(
-                          '.subs',
-                          queryone('#story' + uid + i).parentNode
-                        );
+
                         e.target.storyId = i;
                         e.target.controlLayer.style.backgroundImage = `url('https://img.youtube.com/vi/${
                           e.target.getPlaylist()[0]
@@ -218,21 +209,10 @@ const initStories = () => {
                         e.target.controlLayer.appendChild(
                           stories(null, e.target.getPlaylist())
                         );
-                        e.target.subs = e.target.getPlaylist().map(id => []);
-                        if (queryone('html').getAttribute('lang') === 'en') {
-                          e.target.getPlaylist().forEach((pl, i) =>
-                            loadSubs(pl, i).then(subs => {
-                              e.target.subs[subs.index] = subs.subs;
-                              storiesArray[e.target.storyId].btn.classList.add(
-                                'rkgttr-loaded'
-                              );
-                            })
-                          );
-                        } else {
-                          storiesArray[e.target.storyId].btn.classList.add(
-                            'rkgttr-loaded'
-                          );
-                        }
+
+                        storiesArray[e.target.storyId].btn.classList.add(
+                          'rkgttr-loaded'
+                        );
 
                         storiesArray[e.target.storyId].btn.addEventListener(
                           'click',
@@ -267,7 +247,9 @@ const initStories = () => {
                           nextStories();
                         }
                         if (e.data === 1) {
-                          currentlyPlaying.controlLayer.classList.add('p');
+                          currentlyPlaying.controlLayer.classList.add(
+                            'rkgttr-p'
+                          );
                         }
                         if (e.data === 3) {
                           queryone(
@@ -287,7 +269,9 @@ const initStories = () => {
 
                 storiesArray[i].controls.addEventListener('click', e => {
                   if (
-                    storiesArray[i].story.classList.contains('current-story')
+                    storiesArray[i].story.classList.contains(
+                      'rkgttr-current-story'
+                    )
                   ) {
                     if (
                       storiesArray[i].player.getPlaylistIndex() <
