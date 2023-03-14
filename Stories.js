@@ -14,9 +14,11 @@ const loadYT = () => {
 const stories = (data = null, seekbars = null, uid = 0) => {
   if (data === null) {
     let bars = document.createElement('div');
-    bars.classList.add('seek-bars');
+    bars.classList.add('rkgttr-seek-bars');
     bars.innerHTML = seekbars
-      .map(b => "<div class='seek'><div class='seeker'></div></div>")
+      .map(
+        b => "<div class='rkgttr-seek'><div class='rkgttr-seeker'></div></div>"
+      )
       .join('');
     return bars;
   }
@@ -24,22 +26,20 @@ const stories = (data = null, seekbars = null, uid = 0) => {
   stories.classList.add('rkgttr-stories-container');
   stories.classList.add('stories-swiper');
   stories.setAttribute('id', uid);
-  stories.innerHTML = `<div class='stories swiper-wrapper'>${data
+  stories.innerHTML = `<div class='rkgttr-stories swiper-wrapper'>${data
     .map(
       (story, i) => `
-      <div class="swiper-slide story-container${
-        i === 0 ? ' current-story' : ''
+      <div class="swiper-slide rkgttr-story-container${
+        i === 0 ? ' rkgttr-current-story' : ''
       }">
-        <div class="bgd"></div>
-        <div class="multi"><div></div></div>
-        <div class="story" id="story${uid}${i}"></div>
-        <div class="subs"></div>
-        <div class='controls'></div>
+        <div class="rkgttr-bgd"></div>
+        <div class="rkgttr-story" id="story${uid}${i}"></div>
+        <div class='rkgttr-controls'></div>
       </div>
      `
     )
-    .join('')}<div class="story-container empty"></div></div>
-  <button type="button" class="close"><svg class="icon" viewBox="0 0 24 24"><path d="M17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41L17.59 5Z"></path></svg></button>`;
+    .join('')}<div class="rkgttr-story-container rkgttr-empty"></div></div>
+  <button type="button" class="rkgttr-close"><svg class="rkgttr-icon" viewBox="0 0 24 24"><path d="M17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41L17.59 5Z"></path></svg></button>`;
   return stories;
 };
 const initStories = () => {
@@ -66,7 +66,7 @@ const initStories = () => {
           const uid = '_' + Math.round(Math.random() * 10000);
           document.body.appendChild(
             stories(
-              queryall('button.story', storiesScope).map(s =>
+              queryall('button.rkgttr-story', storiesScope).map(s =>
                 s.getAttribute('data-story')
               ),
               null,
@@ -93,14 +93,14 @@ const initStories = () => {
               currentlyPlaying.stopVideo();
             }
             storiesArray[i].btn.blur();
-            if (queryall('.current-story', scope).length)
-              queryone('.current-story', scope).classList.remove(
-                'current-story'
+            if (queryall('.rkgttr-current-story', scope).length)
+              queryone('.rkgttr-current-story', scope).classList.remove(
+                'rkgttr-current-story'
               );
             currentlyPlaying = storiesArray[i].player;
             currentlyPlaying.playVideoAt(0);
             currentlyPlaying.playVideo();
-            storiesArray[i].story.classList.add('current-story');
+            storiesArray[i].story.classList.add('rkgttr-current-story');
             timecontrol = setInterval(checkTime, 100);
           };
 
@@ -116,7 +116,7 @@ const initStories = () => {
                 }
               });
               currentlyPlaying.subsLayer.textContent = text;
-              queryall('.seeker', currentlyPlaying.controlLayer).forEach(
+              queryall('.rkgttr-seeker', currentlyPlaying.controlLayer).forEach(
                 (seek, i) => {
                   if (i < playlistItem) {
                     gsap.set(seek, { scaleX: 1 });
@@ -130,7 +130,7 @@ const initStories = () => {
             }
           };
 
-          queryone('.close', scope).addEventListener('click', e => {
+          queryone('.rkgttr-close', scope).addEventListener('click', e => {
             currentlyPlaying.playVideoAt(0);
             currentlyPlaying.stopVideo();
             clearInterval(timecontrol);
@@ -138,7 +138,7 @@ const initStories = () => {
             gsap.to(scope, {
               alpha: 0,
               duration: 0.3,
-              onComplete: () => scope.classList.remove('shown'),
+              onComplete: () => scope.classList.remove('rkgttr-shown'),
             });
           });
 
@@ -153,11 +153,11 @@ const initStories = () => {
                 alpha: 0,
                 duration: 0.3,
                 onComplete: () => {
-                  scope.classList.remove('shown');
+                  scope.classList.remove('rkgttr-shown');
                   clearInterval(timecontrol);
                   currentlyPlaying = null;
-                  queryone('.current-story', scope).classList.remove(
-                    'current-story'
+                  queryone('.rkgttr-current-story', scope).classList.remove(
+                    'rkgttr-current-story'
                   );
                 },
               });
@@ -167,134 +167,142 @@ const initStories = () => {
           };
 
           window.YT.ready(() => {
-            queryall('button.story', storiesScope).forEach((storybtn, i) => {
-              const id = Math.round(Math.random() * 10000);
-              storiesArray.push({
-                story: queryall('.stories .story-container', scope)[i],
-                btn: storybtn,
-                controls: queryone(
-                  '.controls',
-                  queryone('#story' + uid + i, scope).parentNode
-                ),
-                player: new YT.Player('story' + uid + i, {
-                  height: '390',
-                  width: '640',
-                  host: 'https://www.youtube.com',
-                  origin: window.location.origin,
-                  playerVars: {
-                    listType: 'playlist',
-                    list: storybtn.getAttribute('data-story'),
-                    modestbranding: 1,
-                    playsinline: 1,
-                    loop: 0,
-                    controls: 0,
-                    showinfo: 0,
-                    rel: 0,
-                  },
-                  events: {
-                    onReady: e => {
-                      e.target.setLoop(false);
-                      e.target.controlLayer = queryone(
-                        '.controls',
-                        queryone('#story' + uid + i).parentNode
-                      );
-                      e.target.subsLayer = queryone(
-                        '.subs',
-                        queryone('#story' + uid + i).parentNode
-                      );
-                      e.target.storyId = i;
-                      e.target.controlLayer.style.backgroundImage = `url('https://img.youtube.com/vi/${
-                        e.target.getPlaylist()[0]
-                      }/maxresdefault.jpg')`;
-                      e.target.controlLayer.parentNode.querySelector(
-                        '.bgd'
-                      ).style.backgroundImage = `url('https://img.youtube.com/vi/${
-                        e.target.getPlaylist()[0]
-                      }/sddefault.jpg')`;
-                      e.target.controlLayer.appendChild(
-                        stories(null, e.target.getPlaylist())
-                      );
-                      e.target.subs = e.target.getPlaylist().map(id => []);
-                      if (queryone('html').getAttribute('lang') === 'en') {
-                        e.target.getPlaylist().forEach((pl, i) =>
-                          loadSubs(pl, i).then(subs => {
-                            e.target.subs[subs.index] = subs.subs;
-                            storiesArray[e.target.storyId].btn.classList.add(
-                              'loaded'
-                            );
-                          })
+            queryall('button.rkgttr-story', storiesScope).forEach(
+              (storybtn, i) => {
+                const id = Math.round(Math.random() * 10000);
+                storiesArray.push({
+                  story: queryall(
+                    '.rkgttr-stories .rkgttr-story-container',
+                    scope
+                  )[i],
+                  btn: storybtn,
+                  controls: queryone(
+                    '.rkgttr-controls',
+                    queryone('#story' + uid + i, scope).parentNode
+                  ),
+                  player: new YT.Player('story' + uid + i, {
+                    height: '390',
+                    width: '640',
+                    host: 'https://www.youtube.com',
+                    origin: window.location.origin,
+                    playerVars: {
+                      listType: 'playlist',
+                      list: storybtn.getAttribute('data-story'),
+                      modestbranding: 1,
+                      playsinline: 1,
+                      loop: 0,
+                      controls: 0,
+                      showinfo: 0,
+                      rel: 0,
+                    },
+                    events: {
+                      onReady: e => {
+                        e.target.setLoop(false);
+                        e.target.controlLayer = queryone(
+                          '.rkgttr-controls',
+                          queryone('#story' + uid + i).parentNode
                         );
-                      } else {
-                        storiesArray[e.target.storyId].btn.classList.add(
-                          'loaded'
+                        e.target.subsLayer = queryone(
+                          '.subs',
+                          queryone('#story' + uid + i).parentNode
                         );
-                      }
+                        e.target.storyId = i;
+                        e.target.controlLayer.style.backgroundImage = `url('https://img.youtube.com/vi/${
+                          e.target.getPlaylist()[0]
+                        }/maxresdefault.jpg')`;
+                        e.target.controlLayer.parentNode.querySelector(
+                          '.rkgttr-bgd'
+                        ).style.backgroundImage = `url('https://img.youtube.com/vi/${
+                          e.target.getPlaylist()[0]
+                        }/sddefault.jpg')`;
+                        e.target.controlLayer.appendChild(
+                          stories(null, e.target.getPlaylist())
+                        );
+                        e.target.subs = e.target.getPlaylist().map(id => []);
+                        if (queryone('html').getAttribute('lang') === 'en') {
+                          e.target.getPlaylist().forEach((pl, i) =>
+                            loadSubs(pl, i).then(subs => {
+                              e.target.subs[subs.index] = subs.subs;
+                              storiesArray[e.target.storyId].btn.classList.add(
+                                'rkgttr-loaded'
+                              );
+                            })
+                          );
+                        } else {
+                          storiesArray[e.target.storyId].btn.classList.add(
+                            'rkgttr-loaded'
+                          );
+                        }
 
-                      storiesArray[e.target.storyId].btn.addEventListener(
-                        'click',
-                        event => {
-                          if (
-                            storiesArray[
-                              e.target.storyId
-                            ].btn.classList.contains('loaded')
-                          ) {
-                            scope.classList.add('shown');
-                            gsap.fromTo(
-                              scope,
-                              { alpha: 0 },
-                              { alpha: 1, duration: 0.3 }
-                            );
+                        storiesArray[e.target.storyId].btn.addEventListener(
+                          'click',
+                          event => {
                             if (
-                              StoriesSwiper.activeIndex !== e.target.storyId
+                              storiesArray[
+                                e.target.storyId
+                              ].btn.classList.contains('rkgttr-loaded')
                             ) {
-                              StoriesSwiper.slideTo(e.target.storyId);
-                            } else {
-                              playStory(e.target.storyId);
+                              scope.classList.add('rkgttr-shown');
+                              gsap.fromTo(
+                                scope,
+                                { alpha: 0 },
+                                { alpha: 1, duration: 0.3 }
+                              );
+                              if (
+                                StoriesSwiper.activeIndex !== e.target.storyId
+                              ) {
+                                StoriesSwiper.slideTo(e.target.storyId);
+                              } else {
+                                playStory(e.target.storyId);
+                              }
                             }
                           }
-                        }
-                      );
-                    },
-                    onStateChange: e => {
-                      if (
-                        e.data === 0 &&
-                        currentlyPlaying.storyId === e.target.storyId
-                      ) {
-                        nextStories();
-                      }
-                      if (e.data === 1) {
-                        currentlyPlaying.controlLayer.classList.add('p');
-                      }
-                      if (e.data === 3) {
-                        queryone('.current-story iframe', scope).classList.add(
-                          'hidden'
                         );
-                      } else {
-                        queryone(
-                          '.current-story iframe',
-                          scope
-                        ).classList.remove('hidden');
-                      }
+                      },
+                      onStateChange: e => {
+                        if (
+                          e.data === 0 &&
+                          currentlyPlaying.storyId === e.target.storyId
+                        ) {
+                          nextStories();
+                        }
+                        if (e.data === 1) {
+                          currentlyPlaying.controlLayer.classList.add('p');
+                        }
+                        if (e.data === 3) {
+                          queryone(
+                            '.rkgttr-current-story iframe',
+                            scope
+                          ).classList.add('rkgttr-hidden');
+                        } else {
+                          queryone(
+                            '.rkgttr-current-story iframe',
+                            scope
+                          ).classList.remove('rkgttr-hidden');
+                        }
+                      },
                     },
-                  },
-                }),
-              });
+                  }),
+                });
 
-              storiesArray[i].controls.addEventListener('click', e => {
-                if (storiesArray[i].story.classList.contains('current-story')) {
+                storiesArray[i].controls.addEventListener('click', e => {
                   if (
-                    storiesArray[i].player.getPlaylistIndex() <
-                    storiesArray[i].player.getPlaylist().length - 1
+                    storiesArray[i].story.classList.contains('current-story')
                   ) {
-                    storiesArray[i].player.nextVideo();
+                    if (
+                      storiesArray[i].player.getPlaylistIndex() <
+                      storiesArray[i].player.getPlaylist().length - 1
+                    ) {
+                      storiesArray[i].player.nextVideo();
+                    } else {
+                      nextStories();
+                    }
                   } else {
-                    nextStories();
+                    StoriesSwiper.slideTo(i);
                   }
-                } else {
-                  StoriesSwiper.slideTo(i);
-                }
-              });
-            });
+                });
+              }
+            );
           });
         });
       })();
