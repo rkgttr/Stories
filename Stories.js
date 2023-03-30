@@ -48,7 +48,7 @@ const initStories = () => {
       const Swiper = await import(
         'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.esm.browser.min.js'
       );
-      const { gsap } = await import('https://cdn.skypack.dev/gsap');
+      const { gsap } = await import('https://cdn.skypack.dev/gsap@3.11.4');
 
       if (!window.hasOwnProperty('YT')) {
         loadYT();
